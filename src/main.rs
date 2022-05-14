@@ -3,6 +3,7 @@
 use clap::Parser;
 use std::io::BufReader;
 use std::fs::File;
+use anyhow::{Context, Result};
 
 
 #[derive(Parser)]
@@ -17,10 +18,10 @@ struct Cli {
 struct CustomError(String);
 
 
-fn main() -> Result<(), CustomError> {
+fn main() -> Result<()> {
 
     let path = "test.txt";
-    let content = std::fs::read_to_string(path).map_err(|err| CustomError(format!("Error reading `{}`: {}", path, err)))?;
+    let content = std::fs::read_to_string(path).with_context(|| format!("could not read file`{}`", path))?;
     println!("file content: {}", content);
     Ok(())
 
