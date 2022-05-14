@@ -13,9 +13,14 @@ struct Cli {
 }
 
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[derive(Debug)]
+struct CustomError(String);
 
-    let content = std::fs::read_to_string("test.txt")?;
+
+fn main() -> Result<(), CustomError> {
+
+    let path = "test.txt";
+    let content = std::fs::read_to_string(path).map_err(|err| CustomError(format!("Error reading `{}`: {}", path, err)))?;
     println!("file content: {}", content);
     Ok(())
 
