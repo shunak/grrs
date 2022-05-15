@@ -4,6 +4,7 @@ use clap::Parser;
 use std::io::BufReader;
 use std::fs::File;
 use anyhow::{Context, Result};
+use indicatif::{HumanDuration, MultiProgress, ProgressBar, ProgressStyle};
 
 
 #[derive(Parser)]
@@ -19,10 +20,18 @@ struct CustomError(String);
 
 
 fn main() -> Result<()> {
+// fn main() {
 
     let path = "test.txt";
     let content = std::fs::read_to_string(path).with_context(|| format!("could not read file`{}`", path))?;
     println!("file content: {}", content);
     Ok(())
+// let pb = indicatif::ProgressBar::new(100);
+//     for i in 0..100 {
+//         // do_hard_work();
+//         pb.println(format!("[+] finished #{}", i));
+//         pb.inc(1);
+//     }
+//     pb.finish_with_message("done");
 
 }
