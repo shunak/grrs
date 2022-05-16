@@ -5,7 +5,7 @@ use std::io::BufReader;
 use std::fs::File;
 use anyhow::{Context, Result};
 use indicatif::{HumanDuration, MultiProgress, ProgressBar, ProgressStyle};
-
+use grrs::find_matches;
 
 #[derive(Parser)]
 struct Cli {
@@ -28,20 +28,20 @@ fn check_answer_validity() {
 #[derive(Debug)]
 struct CustomError(String);
 
+#[test]
+fn find_a_match() {
+    let mut result = Vec::new(); // Vec implements Write trait.
+    find_matches("lorem ipsum\ndolor sit amet","lorem", &mut result);
+    assert_eq!(result, b"lorem ipsum\n");
+}
+
 
 fn main() -> Result<()> {
-// fn main() {
+    let args = Cli::parse();
 
-    let path = "test.txt";
-    let content = std::fs::read_to_string(path).with_context(|| format!("could not read file`{}`", path))?;
-    println!("file content: {}", content);
+    let content = std::fs::read_to_string(&args.path).with_context(|| format!("could not read file`{}`", args.path.display()))?;
+
+    find_matches(&content, &args.pattern, &mut std::io::stdout()); // stdout() implements Write trait
     Ok(())
-// let pb = indicatif::ProgressBar::new(100);
-//     for i in 0..100 {
-//         // do_hard_work();
-//         pb.println(format!("[+] finished #{}", i));
-//         pb.inc(1);
-//     }
-//     pb.finish_with_message("done");
 
 }
